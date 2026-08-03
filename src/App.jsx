@@ -6,7 +6,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
-import AdminNotificationModal from './components/AdminNotificationModal';
+import CatalogDownloadModal from './components/CatalogDownloadModal';
 
 import HomePage from './pages/HomePage';
 import TilesPage from './pages/TilesPage';
@@ -32,7 +32,7 @@ const App = () => {
             <div className="flex flex-col min-h-screen">
               <Navbar />
               <CartDrawer />
-              <AdminNotificationModal />
+              <CatalogDownloadModal />
               <main className="flex-grow">
                 <Routes>
                   <Route path="/" element={<HomePage />} />

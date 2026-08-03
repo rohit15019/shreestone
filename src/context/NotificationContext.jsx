@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const NotificationContext = createContext();
 
-const DEFAULT_FILE_CONTENT = `================================================================================
+const CATALOG_CONTENT = `================================================================================
               SHREESTONE LUXURY CERAMICS & ARCHITECTURAL TILES
                      2026 OFFICIAL CATALOG & SPEC GUIDE
 ================================================================================
 
-Welcome to the official Shreestone Tile Collection for Architects & Designers.
+Welcome to the official Shreestone Tile Collection for Architects, Builders & Homeowners.
 Our 2026 collection brings forward state-of-the-art sintering technology,
 ultra-high-definition veining, and sustainable Italian-inspired craftsmanship.
 
@@ -38,6 +38,14 @@ ultra-high-definition veining, and sustainable Italian-inspired craftsmanship.
 • Description     : Warm Roman travertine texture with delicate tactile pits.
 
 --------------------------------------------------------------------------------
+4. EMERALD QUARTZITE (JEWEL COLLECTION)
+--------------------------------------------------------------------------------
+• Dimensions      : 800 x 1600 mm
+• Finish          : High Gloss Mirror
+• Application     : Statement Walls, Powder Rooms, Boutique Retail
+• Description     : Rich emerald green crystal veining inspired by Brazilian quartzite.
+
+--------------------------------------------------------------------------------
 TECHNICAL CERTIFICATIONS & STANDARDS:
 --------------------------------------------------------------------------------
 ✓ ISO 13006 / EN 14411 Group BIa Certified (Porcelain Tiles)
@@ -53,77 +61,38 @@ FOR SAMPLES, CUSTOM PRICING & PROJECT QUOTATIONS:
 ================================================================================
 `;
 
-const DEFAULT_NOTIFICATION = {
-  isActive: true,
-  message: '💎 NEW 2026 RELEASE: Shreestone Architectural Tile Catalog & Technical Price Matrix is now available!',
-  fileLabel: 'Download Catalog (PDF/Spec)',
-  fileName: 'Shreestone_Luxury_Tiles_Catalog_2026.txt',
-  fileContent: DEFAULT_FILE_CONTENT,
-  fileType: 'text/plain',
-  styleTheme: 'gold', // options: 'gold', 'obsidian', 'emerald', 'sapphire'
-  updatedAt: new Date().toISOString(),
-};
-
 export const NotificationProvider = ({ children }) => {
-  const [notification, setNotification] = useState(() => {
-    try {
-      const saved = localStorage.getItem('shreestone_admin_notification');
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch (e) {
-      console.error('Failed to load saved notification', e);
-    }
-    return DEFAULT_NOTIFICATION;
-  });
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isDownloaded, setIsDownloaded] = useState(false);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('shreestone_admin_notification', JSON.stringify(notification));
-    } catch (e) {
-      console.error('Failed to save notification', e);
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const dismissNotification = (e) => {
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
     }
-  }, [notification]);
-
-  const broadcastNotification = (newConfig) => {
-    const updated = {
-      ...notification,
-      ...newConfig,
-      updatedAt: new Date().toISOString(),
-    };
-    setNotification(updated);
-    setIsDismissed(false); // Reset dismiss state so all users see the new broadcast
-    setIsAdminModalOpen(false);
-  };
-
-  const dismissNotification = () => {
     setIsDismissed(true);
-  };
-
-  const openAdminModal = () => {
-    setIsAdminModalOpen(true);
-  };
-
-  const closeAdminModal = () => {
-    setIsAdminModalOpen(false);
   };
 
   const downloadFile = () => {
     try {
-      const blob = new Blob([notification.fileContent || DEFAULT_FILE_CONTENT], {
-        type: notification.fileType || 'text/plain',
-      });
+      const blob = new Blob([CATALOG_CONTENT], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = notification.fileName || 'Shreestone_Catalog.txt';
+      link.download = 'Shreestone_2026_Luxury_Tiles_Catalog.txt';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      setIsDownloaded(true);
     } catch (err) {
       console.error('Download error:', err);
     }
@@ -132,13 +101,12 @@ export const NotificationProvider = ({ children }) => {
   return (
     <NotificationContext.Provider
       value={{
-        notification,
+        isModalOpen,
         isDismissed,
-        isAdminModalOpen,
-        broadcastNotification,
+        isDownloaded,
+        openModal,
+        closeModal,
         dismissNotification,
-        openAdminModal,
-        closeAdminModal,
         downloadFile,
       }}
     >

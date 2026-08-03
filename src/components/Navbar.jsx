@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
-import { useNotification } from '../context/NotificationContext';
-import { Sun, Moon, Menu, X, Sparkles, ShoppingBag, ShieldAlert } from 'lucide-react';
+import { Sun, Moon, Menu, X, Sparkles, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 import NotificationBar from './NotificationBar';
@@ -11,7 +10,6 @@ import NotificationBar from './NotificationBar';
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { cartItems, openCart } = useCart();
-  const { openAdminModal } = useNotification();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -46,7 +44,7 @@ const Navbar = () => {
         ? 'glass-nav shadow-lg' 
         : 'bg-transparent'
     }`}>
-      {/* Upper-Side Admin Notification Banner with File Download */}
+      {/* Upper-Side Customer Notification Banner */}
       <NotificationBar />
 
       <div className={`transition-all duration-300 ${scrolled ? 'py-2' : 'py-3'}`}>
@@ -89,17 +87,6 @@ const Navbar = () => {
 
             {/* Right Action Icons */}
             <div className="hidden md:flex items-center gap-3">
-              {/* Admin Notification Broadcast Button */}
-              <button
-                onClick={openAdminModal}
-                title="Admin Notification & File Broadcast Panel"
-                aria-label="Admin Broadcast Center"
-                className="p-2.5 rounded-full bg-gold/10 dark:bg-gold/15 text-gold hover:bg-gold/25 transition-colors border border-gold/30 flex items-center gap-1.5 font-semibold text-xs"
-              >
-                <ShieldAlert className="w-4 h-4 text-gold" />
-                <span>Admin</span>
-              </button>
-
               <button
                 onClick={openCart}
                 aria-label="View Showroom Cart"
@@ -136,13 +123,6 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <div className="flex md:hidden items-center gap-2">
-              <button
-                onClick={openAdminModal}
-                aria-label="Admin Broadcast Center"
-                className="p-2 rounded-lg bg-gold/10 dark:bg-gold/15 text-gold border border-gold/30"
-              >
-                <ShieldAlert className="w-4 h-4 text-gold" />
-              </button>
               <button
                 onClick={openCart}
                 aria-label="View Showroom Cart"
@@ -199,18 +179,7 @@ const Navbar = () => {
                 </NavLink>
               ))}
             </nav>
-            <div className="pt-4 border-t border-gray-200 dark:border-charcoal-800 space-y-3">
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  openAdminModal();
-                }}
-                className="w-full py-2.5 rounded-lg bg-charcoal-900 text-gold font-semibold text-sm border border-gold/30 flex items-center justify-center gap-2"
-              >
-                <ShieldAlert className="w-4 h-4" />
-                <span>Admin Broadcast Panel</span>
-              </button>
-
+            <div className="pt-4 border-t border-gray-200 dark:border-charcoal-800">
               <Link
                 to="/tiles"
                 onClick={() => setIsOpen(false)}
