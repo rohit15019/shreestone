@@ -29,7 +29,9 @@ const VisualizerControls = ({
   onZoomOut,
   onChangeTile,
   onOpenAddModal,
-  onApplyFloorPreset
+  onApplyFloorPreset,
+  layoutPattern = 'single',
+  onChangePattern
 }) => {
   const { addToCart } = useCart();
   const currentTile = tileLayers[activeLayerIndex] || selectedTile;
@@ -106,38 +108,91 @@ const VisualizerControls = ({
         </div>
       </div>
 
-      {/* One-Click Smart Floor Shape Presets */}
-      <div className="space-y-2 pb-4 border-b border-gray-100 dark:border-charcoal-700">
-        <span className="text-xs font-semibold uppercase tracking-wider text-charcoal-700 dark:text-gray-300 flex items-center gap-1.5">
-          <LayoutGrid className="w-3.5 h-3.5 text-gold" />
-          <span>Quick Floor Alignment Presets</span>
-        </span>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <button
-            onClick={() => onApplyFloorPreset && onApplyFloorPreset('standard')}
-            className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
-          >
-            Standard Floor
-          </button>
-          <button
-            onClick={() => onApplyFloorPreset && onApplyFloorPreset('wide')}
-            className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
-          >
-            Wide Angle Hall
-          </button>
-          <button
-            onClick={() => onApplyFloorPreset && onApplyFloorPreset('corridor')}
-            className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
-          >
-            Long Corridor
-          </button>
-          <button
-            onClick={() => onApplyFloorPreset && onApplyFloorPreset('flat')}
-            className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
-          >
-            Full Top-Down
-          </button>
+      {/* One-Click Smart Floor Shape Presets & Multi-Tile Layout Mode */}
+      <div className="space-y-4 pb-4 border-b border-gray-100 dark:border-charcoal-700">
+        <div className="space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-charcoal-700 dark:text-gray-300 flex items-center gap-1.5">
+            <LayoutGrid className="w-3.5 h-3.5 text-gold" />
+            <span>Quick Floor Alignment Presets</span>
+          </span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button
+              onClick={() => onApplyFloorPreset && onApplyFloorPreset('standard')}
+              className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
+            >
+              Standard Room
+            </button>
+            <button
+              onClick={() => onApplyFloorPreset && onApplyFloorPreset('wide')}
+              className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
+            >
+              Wide Living Area
+            </button>
+            <button
+              onClick={() => onApplyFloorPreset && onApplyFloorPreset('corridor')}
+              className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
+            >
+              Hallway / Corridor
+            </button>
+            <button
+              onClick={() => onApplyFloorPreset && onApplyFloorPreset('full')}
+              className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-charcoal-900 hover:bg-gold/15 hover:text-gold text-charcoal-800 dark:text-gray-200 text-xs font-semibold transition-all border border-transparent hover:border-gold/30 text-center"
+            >
+              100% Full Surface
+            </button>
+          </div>
         </div>
+
+        {onChangePattern && (
+          <div className="space-y-2 pt-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-charcoal-700 dark:text-gray-300 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-gold" />
+              <span>Multi-Tile Combination Pattern</span>
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button
+                onClick={() => onChangePattern('single')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold transition-all border text-center ${
+                  layoutPattern === 'single'
+                    ? 'bg-gold/20 text-gold border-gold font-bold'
+                    : 'bg-gray-100 dark:bg-charcoal-900 text-charcoal-800 dark:text-gray-300 border-transparent hover:border-gold/30'
+                }`}
+              >
+                Single Tile
+              </button>
+              <button
+                onClick={() => onChangePattern('checkered')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold transition-all border text-center ${
+                  layoutPattern === 'checkered'
+                    ? 'bg-gold/20 text-gold border-gold font-bold'
+                    : 'bg-gray-100 dark:bg-charcoal-900 text-charcoal-800 dark:text-gray-300 border-transparent hover:border-gold/30'
+                }`}
+              >
+                Checkered Grid
+              </button>
+              <button
+                onClick={() => onChangePattern('border')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold transition-all border text-center ${
+                  layoutPattern === 'border'
+                    ? 'bg-gold/20 text-gold border-gold font-bold'
+                    : 'bg-gray-100 dark:bg-charcoal-900 text-charcoal-800 dark:text-gray-300 border-transparent hover:border-gold/30'
+                }`}
+              >
+                Border Frame
+              </button>
+              <button
+                onClick={() => onChangePattern('split')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold transition-all border text-center ${
+                  layoutPattern === 'split'
+                    ? 'bg-gold/20 text-gold border-gold font-bold'
+                    : 'bg-gray-100 dark:bg-charcoal-900 text-charcoal-800 dark:text-gray-300 border-transparent hover:border-gold/30'
+                }`}
+              >
+                Split Room
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Controls Grid */}
@@ -284,8 +339,8 @@ const VisualizerControls = ({
             </div>
             <input
               type="range"
-              min="20"
-              max="85"
+              min="0"
+              max="100"
               step="1"
               value={settings.floorTopY ?? 65}
               onChange={(e) => onChangeSetting('floorTopY', parseInt(e.target.value))}
@@ -299,7 +354,7 @@ const VisualizerControls = ({
           {/* Horizon Width (Top Width) */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-charcoal-700 dark:text-gray-300">Perspective Horizon Width</span>
+              <span className="text-charcoal-700 dark:text-gray-300">Top Horizon Width</span>
               <span className="text-gold">{settings.floorTopWidth ?? 45}%</span>
             </div>
             <input
@@ -316,10 +371,70 @@ const VisualizerControls = ({
             </p>
           </div>
 
+          {/* Bottom Floor Width */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-semibold">
+              <span className="text-charcoal-700 dark:text-gray-300">Bottom Floor Width</span>
+              <span className="text-gold">{settings.floorBottomWidth ?? 96}%</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value={settings.floorBottomWidth ?? 96}
+              onChange={(e) => onChangeSetting('floorBottomWidth', parseInt(e.target.value))}
+              className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
+            />
+            <p className="text-[10px] text-gray-400">
+              Width of floor at the bottom of the room photo.
+            </p>
+          </div>
+
+          {/* Floor Bottom (Bottom Y) */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-semibold">
+              <span className="text-charcoal-700 dark:text-gray-300">Floor Bottom Line (Bottom Y)</span>
+              <span className="text-gold">{settings.floorBottomY ?? 99}%</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="1"
+              value={settings.floorBottomY ?? 99}
+              onChange={(e) => onChangeSetting('floorBottomY', parseInt(e.target.value))}
+              className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
+            />
+            <p className="text-[10px] text-gray-400">
+              Set where the floor ends at the bottom of the image.
+            </p>
+          </div>
+
+          {/* Floor Left/Right Shift */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-semibold">
+              <span className="text-charcoal-700 dark:text-gray-300">Floor Left/Right Shift</span>
+              <span className="text-gold">{settings.floorShiftX ?? 0}%</span>
+            </div>
+            <input
+              type="range"
+              min="-50"
+              max="50"
+              step="1"
+              value={settings.floorShiftX ?? 0}
+              onChange={(e) => onChangeSetting('floorShiftX', parseInt(e.target.value))}
+              className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
+            />
+            <p className="text-[10px] text-gray-400">
+              Shift entire floor shape left or right to match off-center room angles.
+            </p>
+          </div>
+
           {/* Perspective 3D Depth */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-charcoal-700 dark:text-gray-300">3D Foreshortening Depth</span>
+              <span className="text-charcoal-700 dark:text-gray-300">3D Perspective Depth</span>
               <span className="text-gold">{settings.perspectiveDepth ?? 75}%</span>
             </div>
             <input

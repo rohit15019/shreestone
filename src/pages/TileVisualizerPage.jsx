@@ -128,33 +128,40 @@ const TileVisualizerPage = () => {
       setSettings(prev => ({
         ...prev,
         floorTopY: 65,
+        floorBottomY: 99,
         floorTopWidth: 45,
         floorBottomWidth: 96,
+        floorShiftX: 0,
         perspectiveDepth: 75
       }));
     } else if (presetType === 'wide') {
       setSettings(prev => ({
         ...prev,
         floorTopY: 55,
+        floorBottomY: 99,
         floorTopWidth: 65,
         floorBottomWidth: 100,
+        floorShiftX: 0,
         perspectiveDepth: 85
       }));
     } else if (presetType === 'corridor') {
       setSettings(prev => ({
         ...prev,
         floorTopY: 70,
+        floorBottomY: 99,
         floorTopWidth: 25,
         floorBottomWidth: 80,
+        floorShiftX: 0,
         perspectiveDepth: 95
       }));
-    } else if (presetType === 'flat') {
+    } else if (presetType === 'full' || presetType === 'flat') {
       setSettings(prev => ({
         ...prev,
         floorTopY: 0,
         floorBottomY: 100,
         floorTopWidth: 100,
         floorBottomWidth: 100,
+        floorShiftX: 0,
         perspectiveDepth: 0
       }));
     }
@@ -237,6 +244,8 @@ const TileVisualizerPage = () => {
               selectedTile={tileLayers[activeLayerIndex] || selectedTile}
               tileLayers={tileLayers}
               activeLayerIndex={activeLayerIndex}
+              layoutPattern={layoutPattern}
+              onChangePattern={setLayoutPattern}
               settings={settings}
               onChangeSetting={handleChangeSetting}
               onReset={handleReset}
