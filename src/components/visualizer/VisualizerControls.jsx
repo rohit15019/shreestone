@@ -212,9 +212,6 @@ const VisualizerControls = ({
             onChange={(e) => onChangeSetting('scale', parseFloat(e.target.value))}
             className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
           />
-          <p className="text-[10px] text-gray-400">
-            Adjust pattern scale for 2x2, 4x4 or large slab look.
-          </p>
         </div>
 
         {/* 2. Rotation Angle */}
@@ -232,9 +229,6 @@ const VisualizerControls = ({
             onChange={(e) => onChangeSetting('rotation', parseInt(e.target.value))}
             className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
           />
-          <p className="text-[10px] text-gray-400">
-            Rotate texture for diagonal or herringbone tile layout.
-          </p>
         </div>
 
         {/* 3. Surface Opacity */}
@@ -252,9 +246,6 @@ const VisualizerControls = ({
             onChange={(e) => onChangeSetting('opacity', parseInt(e.target.value))}
             className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
           />
-          <p className="text-[10px] text-gray-400">
-            Blend tile glaze seamlessly with natural room lighting.
-          </p>
         </div>
 
         {/* 4. Grout & Grid Size */}
@@ -272,9 +263,6 @@ const VisualizerControls = ({
             onChange={(e) => onChangeSetting('gridSize', parseInt(e.target.value))}
             className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
           />
-          <p className="text-[10px] text-gray-400">
-            Control density of joint lines between tiles.
-          </p>
         </div>
 
         {/* 5. Horizontal Shift */}
@@ -292,9 +280,6 @@ const VisualizerControls = ({
             onChange={(e) => onChangeSetting('offsetX', parseInt(e.target.value))}
             className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
           />
-          <p className="text-[10px] text-gray-400">
-            Shift pattern left or right to align with room walls.
-          </p>
         </div>
 
         {/* 6. Vertical Shift */}
@@ -312,9 +297,6 @@ const VisualizerControls = ({
             onChange={(e) => onChangeSetting('offsetY', parseInt(e.target.value))}
             className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
           />
-          <p className="text-[10px] text-gray-400">
-            Shift pattern forward or backward on the floor plane.
-          </p>
         </div>
       </div>
 
@@ -346,9 +328,6 @@ const VisualizerControls = ({
               onChange={(e) => onChangeSetting('floorTopY', parseInt(e.target.value))}
               className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
             />
-            <p className="text-[10px] text-gray-400">
-              Set where the floor starts so tiles never climb furniture or walls.
-            </p>
           </div>
 
           {/* Horizon Width (Top Width) */}
@@ -366,9 +345,6 @@ const VisualizerControls = ({
               onChange={(e) => onChangeSetting('floorTopWidth', parseInt(e.target.value))}
               className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
             />
-            <p className="text-[10px] text-gray-400">
-              Width of floor at the far wall horizon (creates realistic trapezoid).
-            </p>
           </div>
 
           {/* Bottom Floor Width */}
@@ -386,9 +362,6 @@ const VisualizerControls = ({
               onChange={(e) => onChangeSetting('floorBottomWidth', parseInt(e.target.value))}
               className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
             />
-            <p className="text-[10px] text-gray-400">
-              Width of floor at the bottom of the room photo.
-            </p>
           </div>
 
           {/* Floor Bottom (Bottom Y) */}
@@ -406,9 +379,6 @@ const VisualizerControls = ({
               onChange={(e) => onChangeSetting('floorBottomY', parseInt(e.target.value))}
               className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
             />
-            <p className="text-[10px] text-gray-400">
-              Set where the floor ends at the bottom of the image.
-            </p>
           </div>
 
           {/* Floor Left/Right Shift */}
@@ -426,9 +396,6 @@ const VisualizerControls = ({
               onChange={(e) => onChangeSetting('floorShiftX', parseInt(e.target.value))}
               className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
             />
-            <p className="text-[10px] text-gray-400">
-              Shift entire floor shape left or right to match off-center room angles.
-            </p>
           </div>
 
           {/* Perspective 3D Depth */}
@@ -446,9 +413,6 @@ const VisualizerControls = ({
               onChange={(e) => onChangeSetting('perspectiveDepth', parseInt(e.target.value))}
               className="w-full accent-gold bg-gray-200 dark:bg-charcoal-700 h-2 rounded-lg cursor-pointer"
             />
-            <p className="text-[10px] text-gray-400">
-              Makes distant tiles appear smaller than foreground tiles.
-            </p>
           </div>
         </div>
       </div>
