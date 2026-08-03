@@ -7,15 +7,17 @@ import TileSelectorDrawer from '../components/visualizer/TileSelectorDrawer';
 import VisualizerControls from '../components/visualizer/VisualizerControls';
 import CanvasFloorRenderer from '../components/visualizer/CanvasFloorRenderer';
 import SplitScreenComparison from '../components/visualizer/SplitScreenComparison';
+import TileLayersBar from '../components/visualizer/TileLayersBar';
+import AddTileModal from '../components/visualizer/AddTileModal';
 
 /**
  * TileVisualizerPage Component
  * New feature page at /tile-visualizer
  * Combines Steps 1 - 7:
  * STEP 1: Room Image Uploader (JPG, PNG, WEBP, browser memory only)
- * STEP 2: Tile Selector from existing product catalog
- * STEP 3: Client-side HTML5 Canvas + Perspective floor overlay
- * STEP 4: Real-time Editing Controls & Sliders (including Floor Horizon & Alignment calibration)
+ * STEP 2: Tile Selector from existing product catalog & Custom Tile Upload
+ * STEP 3: Client-side HTML5 Canvas + Perspective floor overlay with Multi-Tile Support
+ * STEP 4: Real-time Editing Controls & Sliders + "+ Add Tile" button for Checkered/Border combinations
  * STEP 5: Before / After Split Screen Comparison
  * STEP 6: Download PNG Image export
  * STEP 7: Responsive Luxury Design (Desktop, Tablet, Mobile)
@@ -47,8 +49,14 @@ const TileVisualizerPage = () => {
   // Step 1: Uploaded or preset room photo state (defaulting to preset living room so canvas is never empty)
   const [roomImage, setRoomImage] = useState(DEFAULT_ROOM_IMAGE);
 
-  // Step 2: Selected tile from product catalog (default to first Statuario slab)
+  // Default single selected tile fallback
   const [selectedTile, setSelectedTile] = useState(tilesData[0] || null);
+
+  // NEW: Multi-Tile Layers State ("make one tile image and after uploading image customer can edit and add more tile by clicking add tile button")
+  const [tileLayers, setTileLayers] = useState([tilesData[0] || null]);
+  const [activeLayerIndex, setActiveLayerIndex] = useState(0);
+  const [layoutPattern, setLayoutPattern] = useState('single'); // 'single' | 'checkered' | 'border' | 'split'
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Step 4: Interactive transformation settings
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
@@ -80,6 +88,40 @@ const TileVisualizerPage = () => {
     }
   };
 
+  // Add a new tile layer to the room visualization
+  const handleAddTile = (newTile) => {
+    setTileLayers(prev => {
+      const updated = [...prev, newTile];
+      // Automatically switch to 'checkered' pattern when adding a 2nd tile to show multi-tile combination
+      if (updated.length === 2) {
+        setLayoutPattern('checkered');
+      }
+      return updated;
+    });
+    setActiveLayerIndex(tileLayers.length);
+    setSelectedTile(newTile);
+  };
+
+  // Remove a tile layer from the visualization
+  const handleRemoveTile = (indexToRemove) => {
+    if (tileLayers.length <= 1) return; // Keep at least 1 tile
+    setTileLayers(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    if (activeLayerIndex >= indexToRemove && activeLayerIndex > 0) {
+      setActiveLayerIndex(prev => prev - 1);
+    }
+    if (tileLayers.length - 1 === 1) {
+      setLayoutPattern('single');
+    }
+  };
+
+  // Select which tile layer is being actively edited
+  const handleSelectLayer = (index) => {
+    setActiveLayerIndex(index);
+    if (tileLayers[index]) {
+      setSelectedTile(tileLayers[index]);
+    }
+  };
+
   // Quick 1-click Floor Shape Presets to align floor tiles instantly
   const handleApplyFloorPreset = (presetType) => {
     if (presetType === 'standard') {
@@ -101,12 +143,12 @@ const TileVisualizerPage = () => {
     } else if (presetType === 'corridor') {
       setSettings(prev => ({
         ...prev,
-        floorTopY: 50,
+        floorTopY: 70,
         floorTopWidth: 25,
-        floorBottomWidth: 85,
-        perspectiveDepth: 90
+        floorBottomWidth: 80,
+        perspectiveDepth: 95
       }));
-    } else if (presetType === 'full') {
+    } else if (presetType === 'flat') {
       setSettings(prev => ({
         ...prev,
         floorTopY: 0,
@@ -129,7 +171,7 @@ const TileVisualizerPage = () => {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/15 border border-gold/30 text-gold text-xs font-semibold tracking-wider uppercase mb-3 backdrop-blur-md"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>100% Client-Side • Zero Server Uploads</span>
+            <span>100% Client-Side • Zero Server Uploads • Multi-Tile Layouts</span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
@@ -145,7 +187,7 @@ const TileVisualizerPage = () => {
             transition={{ delay: 0.2 }}
             className="text-sm text-gray-600 dark:text-gray-400 mt-2"
           >
-            Upload any room photo and instantly render Italian Carrara marble, vitrified slabs, or outdoor pavers onto your floors with real-time perspective controls.
+            Upload any room photo and instantly render Italian Carrara marble, vitrified slabs, or outdoor pavers. Click "+ Add Tile" to combine multiple tiles in checkered grids, borders, and custom layouts.
           </motion.p>
         </div>
 
@@ -166,11 +208,24 @@ const TileVisualizerPage = () => {
 
         {/* STEP 3, 4, 6: Main Canvas Floor Renderer & Interactive Controls */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left / Top: Interactive Perspective Canvas Renderer (7 cols on desktop) */}
+          {/* Left / Top: Active Tile Layers Bar & Perspective Canvas Renderer (7 cols on desktop) */}
           <div className="lg:col-span-7 space-y-6">
+            <TileLayersBar
+              tileLayers={tileLayers}
+              activeLayerIndex={activeLayerIndex}
+              layoutPattern={layoutPattern}
+              onSelectLayer={handleSelectLayer}
+              onRemoveLayer={handleRemoveTile}
+              onChangePattern={setLayoutPattern}
+              onOpenAddModal={() => setIsAddModalOpen(true)}
+            />
+
             <CanvasFloorRenderer
               roomImage={roomImage}
-              selectedTile={selectedTile}
+              selectedTile={tileLayers[activeLayerIndex] || selectedTile}
+              tileLayers={tileLayers}
+              activeLayerIndex={activeLayerIndex}
+              layoutPattern={layoutPattern}
               settings={settings}
               onChangeSetting={handleChangeSetting}
             />
@@ -179,13 +234,16 @@ const TileVisualizerPage = () => {
           {/* Right / Bottom: Real-Time Sliders & Controls (5 cols on desktop) */}
           <div className="lg:col-span-5 space-y-6">
             <VisualizerControls
-              selectedTile={selectedTile}
+              selectedTile={tileLayers[activeLayerIndex] || selectedTile}
+              tileLayers={tileLayers}
+              activeLayerIndex={activeLayerIndex}
               settings={settings}
               onChangeSetting={handleChangeSetting}
               onReset={handleReset}
               onZoomIn={handleZoomIn}
               onZoomOut={handleZoomOut}
               onChangeTile={handleChangeTile}
+              onOpenAddModal={() => setIsAddModalOpen(true)}
               onApplyFloorPreset={handleApplyFloorPreset}
             />
           </div>
@@ -195,7 +253,7 @@ const TileVisualizerPage = () => {
         <section className="space-y-4">
           <SplitScreenComparison
             roomImage={roomImage}
-            selectedTile={selectedTile}
+            selectedTile={tileLayers[activeLayerIndex] || selectedTile}
             settings={settings}
           />
         </section>
@@ -203,9 +261,18 @@ const TileVisualizerPage = () => {
         {/* STEP 2: Product Data Texture Library (Clicking selects tile instantly) */}
         <section id="texture-library-section" className="space-y-4">
           <TileSelectorDrawer
-            selectedTile={selectedTile}
+            selectedTile={tileLayers[activeLayerIndex] || selectedTile}
             onSelectTile={(tile) => {
               setSelectedTile(tile);
+              setTileLayers(prev => {
+                const updated = [...prev];
+                if (updated[activeLayerIndex]) {
+                  updated[activeLayerIndex] = tile;
+                } else {
+                  updated[0] = tile;
+                }
+                return updated;
+              });
               window.scrollTo({ top: 400, behavior: 'smooth' });
             }}
           />
@@ -218,23 +285,29 @@ const TileVisualizerPage = () => {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-display font-bold text-lg">
+              <h4 className="font-display font-bold text-lg text-white">
                 100% Client-Side Privacy Guarantee
               </h4>
-              <p className="text-xs text-gray-400 mt-0.5 max-w-xl">
-                Your uploaded room photos are processed exclusively inside your web browser memory using HTML5 Canvas. No photos or floor layouts are ever uploaded or transmitted to any server.
+              <p className="text-xs text-gray-400">
+                Your private home and room photos are processed exclusively inside your device browser memory. Nothing is ever uploaded to external servers.
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <div className="text-right hidden sm:block">
-              <span className="text-xs font-semibold text-gold block uppercase">Surface Warranty</span>
-              <span className="text-xs text-gray-400">10 Years Italian Standard</span>
+          <div className="flex items-center gap-3">
+            <div className="px-4 py-2 rounded-xl bg-charcoal-900 border border-charcoal-800 text-xs text-gray-300 flex items-center gap-2">
+              <Award className="w-4 h-4 text-gold" />
+              <span>Full HD Perspective Export</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Add Tile Modal for Multi-Tile Layouts */}
+      <AddTileModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAddTile={handleAddTile}
+      />
     </div>
   );
 };
