@@ -1,32 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const Logo = ({ className = '', size = 'md', forceWhite = false }) => {
-  const [imageError, setImageError] = useState(false);
-
-  // Responsive sizes for the image logo
-  const imageSizes = {
-    sm: 'h-12 sm:h-14 md:h-16',
-    md: 'h-16 sm:h-20 md:h-[84px]',
-    lg: 'h-28 sm:h-36 md:h-[145px]'
-  };
-
-  const heightClass = imageSizes[size] || imageSizes.md;
-
-  // Primary: Render the user's actual logo.jpeg image from /public
-  if (!imageError) {
-    return (
-      <div className={`inline-flex items-center select-none ${className}`}>
-        <img
-          src="/logo.jpeg"
-          alt="Shreestone Ceramics Logo"
-          onError={() => setImageError(true)}
-          className={`${heightClass} w-auto object-contain rounded-lg transition-transform duration-300`}
-        />
-      </div>
-    );
-  }
-
-  // Fallback: Vector SVG Lotus-O + Cinzel Roman Serif Typography
+  // Vector SVG Lotus-O + Cinzel Roman Serif Typography
   const sizeClasses = {
     sm: {
       text: 'text-base sm:text-lg',
