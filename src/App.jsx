@@ -13,6 +13,7 @@ import TilesPage from './pages/TilesPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import TileVisualizerPage from './pages/TileVisualizerPage';
+import Tile360VisualizerPage from './pages/Tile360VisualizerPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -38,6 +39,8 @@ const App = () => {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/tiles" element={<TilesPage />} />
                   <Route path="/tile-visualizer" element={<TileVisualizerPage />} />
+                  <Route path="/360-view" element={<Tile360VisualizerPage />} />
+                  <Route path="/360" element={<Tile360VisualizerPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/contact" element={<ContactPage />} />
                 </Routes>

@@ -35,6 +35,7 @@ const Navbar = () => {
     { name: 'Home', path: '/' },
     { name: 'Tiles Collection', path: '/tiles' },
     { name: 'AI Visualizer', path: '/tile-visualizer' },
+    { name: '360° View', path: '/360-view' },
     { name: 'About Us', path: '/about' },
     { name: 'Contact Showroom', path: '/contact' },
   ];
