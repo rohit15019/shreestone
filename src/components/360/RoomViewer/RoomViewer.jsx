@@ -14,18 +14,18 @@ const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
     let isMounted = true;
     const imgUrl = tile?.images?.[0] || '';
 
-    const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 512;
-    const ctx = canvas.getContext('2d');
-
     const createDefaultTexture = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
       // Draw luxury procedural marble grid
-      ctx.fillStyle = tile?.color === 'Black' ? '#1A1A1A' : '#F5F5F5';
+      ctx.fillStyle = tile?.color === 'Black' ? '#1E1E1E' : '#F4F4F4';
       ctx.fillRect(0, 0, 512, 512);
 
       // Subtle veining
-      ctx.strokeStyle = tile?.color === 'Black' ? 'rgba(212,175,55,0.2)' : 'rgba(0,0,0,0.08)';
+      ctx.strokeStyle = tile?.color === 'Black' ? 'rgba(212,175,55,0.35)' : 'rgba(0,0,0,0.12)';
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(50, 0);
@@ -33,14 +33,15 @@ const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
       ctx.stroke();
 
       // Grout frame
-      ctx.strokeStyle = 'rgba(212,175,55,0.4)';
+      ctx.strokeStyle = 'rgba(212,175,55,0.5)';
       ctx.lineWidth = 4;
       ctx.strokeRect(0, 0, 512, 512);
 
       const tex = new THREE.CanvasTexture(canvas);
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
       tex.repeat.set(repeatX, repeatY);
-      tex.anisotropy = 16;
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.needsUpdate = true;
       if (isMounted) setTexture(tex);
     };
 
@@ -49,26 +50,23 @@ const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
       return;
     }
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = imgUrl;
-    img.onload = () => {
-      if (!isMounted) return;
-      ctx.drawImage(img, 0, 0, 512, 512);
-      // Grout line
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(0, 0, 512, 512);
-
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(repeatX, repeatY);
-      tex.anisotropy = 16;
-      setTexture(tex);
-    };
-    img.onerror = () => {
-      if (isMounted) createDefaultTexture();
-    };
+    const loader = new THREE.TextureLoader();
+    loader.crossOrigin = 'anonymous';
+    loader.load(
+      imgUrl,
+      (tex) => {
+        if (!isMounted) return;
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(repeatX, repeatY);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.needsUpdate = true;
+        setTexture(tex);
+      },
+      undefined,
+      () => {
+        if (isMounted) createDefaultTexture();
+      }
+    );
 
     return () => {
       isMounted = false;
@@ -110,9 +108,9 @@ const LuxuryRoomScene = () => {
   // Floor & Wall textures
   const floorTileToUse = isCompareMode
     ? (compareSliderPos > 50 ? compareTileA : compareTileB)
-    : (applyTarget === 'wall' ? null : selectedTileFloor);
+    : selectedTileFloor;
 
-  const wallTileToUse = applyTarget === 'floor' ? null : selectedTileWall;
+  const wallTileToUse = selectedTileWall || selectedTileFloor;
 
   const floorTexture = useSafeTileTexture(floorTileToUse || selectedTileFloor, 6, 6);
   const wallTexture = useSafeTileTexture(wallTileToUse || selectedTileFloor, 5, 3);
@@ -135,7 +133,7 @@ const LuxuryRoomScene = () => {
       {/* Dynamic Lighting from activeLighting mode */}
       <ambientLight
         color={activeLighting.color}
-        intensity={activeLighting.ambientIntensity}
+        intensity={activeLighting.ambientIntensity + 0.3}
       />
       <directionalLight
         position={[10, 20, 15]}
@@ -154,6 +152,13 @@ const LuxuryRoomScene = () => {
         color="#FFE5B4"
         castShadow
       />
+      {/* Central interior fill light so all 4 walls are brightly illuminated */}
+      <pointLight
+        position={[0, h / 2, 0]}
+        intensity={1.8}
+        distance={35}
+        color="#FFFFFF"
+      />
 
       {/* 1. MAIN FLOOR MESH */}
       <mesh
@@ -167,6 +172,7 @@ const LuxuryRoomScene = () => {
           roughness={selectedTileFloor?.finish === 'Glossy' ? 0.15 : 0.65}
           metalness={selectedTileFloor?.finish === 'Glossy' ? 0.25 : 0.05}
           color="#FFFFFF"
+          side={THREE.DoubleSide}
         />
       </mesh>
 
@@ -175,9 +181,10 @@ const LuxuryRoomScene = () => {
       <mesh position={[0, h / 2, -l / 2]} receiveShadow>
         <planeGeometry args={[w, h]} />
         <meshStandardMaterial
-          map={wallTileToUse ? wallTexture : null}
-          color={wallTileToUse ? '#FFFFFF' : activeRoom.wallColor}
-          roughness={0.7}
+          map={wallTexture}
+          color="#FFFFFF"
+          roughness={0.4}
+          side={THREE.DoubleSide}
         />
       </mesh>
 
@@ -185,9 +192,10 @@ const LuxuryRoomScene = () => {
       <mesh position={[0, h / 2, l / 2]} rotation={[0, Math.PI, 0]} receiveShadow>
         <planeGeometry args={[w, h]} />
         <meshStandardMaterial
-          map={wallTileToUse ? wallTexture : null}
-          color={wallTileToUse ? '#FFFFFF' : activeRoom.wallColor}
-          roughness={0.7}
+          map={wallTexture}
+          color="#FFFFFF"
+          roughness={0.4}
+          side={THREE.DoubleSide}
         />
       </mesh>
 
@@ -195,9 +203,10 @@ const LuxuryRoomScene = () => {
       <mesh position={[-w / 2, h / 2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
         <planeGeometry args={[l, h]} />
         <meshStandardMaterial
-          map={wallTileToUse ? wallTexture : null}
-          color={wallTileToUse ? '#FFFFFF' : activeRoom.wallColor}
-          roughness={0.7}
+          map={wallTexture}
+          color="#FFFFFF"
+          roughness={0.4}
+          side={THREE.DoubleSide}
         />
       </mesh>
 
@@ -205,9 +214,10 @@ const LuxuryRoomScene = () => {
       <mesh position={[w / 2, h / 2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
         <planeGeometry args={[l, h]} />
         <meshStandardMaterial
-          map={wallTileToUse ? wallTexture : null}
-          color={wallTileToUse ? '#FFFFFF' : activeRoom.wallColor}
-          roughness={0.7}
+          map={wallTexture}
+          color="#FFFFFF"
+          roughness={0.4}
+          side={THREE.DoubleSide}
         />
       </mesh>
 

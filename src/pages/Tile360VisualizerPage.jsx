@@ -17,7 +17,7 @@ const Visualizer360Content = () => {
   const { activeRoom } = useRoom360();
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-charcoal-950 pb-16 transition-colors duration-300">
+    <div className="min-h-screen pt-20 sm:pt-24 bg-gray-100 dark:bg-charcoal-950 pb-16 transition-colors duration-300">
       {/* 1. Page Title Header */}
       <section className="bg-white dark:bg-charcoal-900 border-b border-gray-200/80 dark:border-charcoal-800 py-6 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
