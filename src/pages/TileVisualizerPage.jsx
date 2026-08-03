@@ -263,6 +263,9 @@ const TileVisualizerPage = () => {
           <SplitScreenComparison
             roomImage={roomImage}
             selectedTile={tileLayers[activeLayerIndex] || selectedTile}
+            tileLayers={tileLayers}
+            activeLayerIndex={activeLayerIndex}
+            layoutPattern={layoutPattern}
             settings={settings}
           />
         </section>
