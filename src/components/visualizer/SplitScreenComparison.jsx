@@ -104,11 +104,13 @@ const SplitScreenComparison = ({
           const topWidthRatio = (settings?.floorTopWidth || 45) / 100;
           const bottomWidthRatio = (settings?.floorBottomWidth || 96) / 100;
 
+          const shiftX = width * ((settings?.floorShiftX || 0) / 100);
+
           ctx.beginPath();
-          ctx.moveTo(width * ((1 - topWidthRatio) / 2), topY);
-          ctx.lineTo(width * ((1 + topWidthRatio) / 2), topY);
-          ctx.lineTo(width * ((1 + bottomWidthRatio) / 2), bottomY);
-          ctx.lineTo(width * ((1 - bottomWidthRatio) / 2), bottomY);
+          ctx.moveTo(width * ((1 - topWidthRatio) / 2) + shiftX, topY);
+          ctx.lineTo(width * ((1 + topWidthRatio) / 2) + shiftX, topY);
+          ctx.lineTo(width * ((1 + bottomWidthRatio) / 2) + shiftX, bottomY);
+          ctx.lineTo(width * ((1 - bottomWidthRatio) / 2) + shiftX, bottomY);
           ctx.closePath();
           ctx.clip();
 
@@ -118,32 +120,97 @@ const SplitScreenComparison = ({
           patternCanvas.height = basePatternSize;
           const pCtx = patternCanvas.getContext('2d');
           pCtx.drawImage(tileImg, 0, 0, basePatternSize, basePatternSize);
+          pCtx.strokeStyle = 'rgba(255,255,255,0.22)';
+          pCtx.lineWidth = 1.2;
+          pCtx.strokeRect(0, 0, basePatternSize, basePatternSize);
 
-          const pattern = ctx.createPattern(patternCanvas, 'repeat');
-          const totalSlices = 70;
-          const sliceHeight = (bottomY - topY) / totalSlices;
-          const perspectiveIntensity = (settings?.perspectiveDepth || 75) / 100;
+          // Perspective triangle mesh renderer for proper upper horizon tile shapes
+          const cols = 24;
+          const rows = 24;
+          const f = (settings?.perspectiveDepth ?? 75) / 100;
+          const k = f * 0.85;
 
-          for (let i = 0; i < totalSlices; i++) {
-            const sliceTop = topY + i * sliceHeight;
-            const sliceBottom = sliceTop + sliceHeight + 0.5;
-            const progress = i / totalSlices;
-            const depthScale = Math.pow(progress, 1 + (1 - perspectiveIntensity) * 0.8) * 1.5 + 0.25;
+          const patW = patternCanvas.width;
+          const patH = patternCanvas.height;
+          const repeatX = Math.max(1, Math.round((width * 1.5) / patW));
+          const repeatY = Math.max(1, Math.round((height * 1.5) / patH));
+          const offsetX = -(settings?.offsetX || 0);
+          const offsetY = -(settings?.offsetY || 0);
+          const rotDeg = settings?.rotation || 0;
+
+          const getRotatedUV = (u, v) => {
+            const rx = u * repeatX * patW + offsetX;
+            const ry = v * repeatY * patH + offsetY;
+            if (rotDeg === 0) return { x: rx, y: ry };
+
+            const rad = (rotDeg * Math.PI) / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+            const cx = 0.5 * repeatX * patW;
+            const cy = 0.5 * repeatY * patH;
+            const dx = rx - cx;
+            const dy = ry - cy;
+            return {
+              x: cx + dx * cos - dy * sin,
+              y: cy + dx * sin + dy * cos
+            };
+          };
+
+          const getScreenPos = (u, v) => {
+            const py = (v * (1 + k)) / (1 + k * v);
+            const sy = topY + (bottomY - topY) * py;
+            const currentWidthRatio = topWidthRatio + (bottomWidthRatio - topWidthRatio) * py;
+            const leftX = width * ((1 - currentWidthRatio) / 2) + shiftX;
+            const rightX = width * ((1 + currentWidthRatio) / 2) + shiftX;
+            const sx = leftX + u * (rightX - leftX);
+            return { x: sx, y: sy };
+          };
+
+          const drawTriangle = (s0, s1, s2, d0, d1, d2) => {
+            const sDelta = (s0.x - s2.x) * (s1.y - s2.y) - (s1.x - s2.x) * (s0.y - s2.y);
+            if (Math.abs(sDelta) < 0.0001) return;
+
+            const a = ((d0.x - d2.x) * (s1.y - s2.y) - (d1.x - d2.x) * (s0.y - s2.y)) / sDelta;
+            const b = ((d0.y - d2.y) * (s1.y - s2.y) - (d1.y - d2.y) * (s0.y - s2.y)) / sDelta;
+            const c = ((s0.x - s2.x) * (d1.x - d2.x) - (s1.x - s2.x) * (d0.x - d2.x)) / sDelta;
+            const d = ((s0.x - s2.x) * (d1.y - d2.y) - (s1.x - s2.x) * (d0.y - d2.y)) / sDelta;
+            const e = d0.x - a * s0.x - c * s0.y;
+            const fMat = d0.y - b * s0.x - d * s0.y;
 
             ctx.save();
             ctx.beginPath();
-            ctx.rect(0, sliceTop, width, sliceBottom - sliceTop);
+            ctx.moveTo(d0.x, d0.y);
+            ctx.lineTo(d1.x, d1.y);
+            ctx.lineTo(d2.x, d2.y);
+            ctx.closePath();
             ctx.clip();
 
-            if (pattern) {
-              ctx.fillStyle = pattern;
-              ctx.translate(width / 2 + (settings?.offsetX || 0), sliceTop + (settings?.offsetY || 0));
-              ctx.scale(depthScale, depthScale * 0.7);
-              ctx.rotate(((settings?.rotation || 0) * Math.PI) / 180);
-              ctx.translate(-width / 2, -sliceTop);
-              ctx.fillRect(-width * 2, -height * 2, width * 5, height * 5);
-            }
+            ctx.transform(a, b, c, d, e, fMat);
+            const maxU = Math.ceil(repeatX * patW);
+            const maxV = Math.ceil(repeatY * patH);
+            ctx.fillStyle = ctx.createPattern(patternCanvas, 'repeat');
+            ctx.fillRect(-patW * 4, -patH * 4, maxU + patW * 8, maxV + patH * 8);
             ctx.restore();
+          };
+
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              const u0 = c / cols, u1 = (c + 1) / cols;
+              const v0 = r / rows, v1 = (r + 1) / rows;
+
+              const p00 = getScreenPos(u0, v0);
+              const p10 = getScreenPos(u1, v0);
+              const p01 = getScreenPos(u0, v1);
+              const p11 = getScreenPos(u1, v1);
+
+              const s00 = getRotatedUV(u0, v0);
+              const s10 = getRotatedUV(u1, v0);
+              const s01 = getRotatedUV(u0, v1);
+              const s11 = getRotatedUV(u1, v1);
+
+              drawTriangle(s00, s10, s01, p00, p10, p01);
+              drawTriangle(s10, s11, p01, p10, p11, p01);
+            }
           }
 
           ctx.restore();

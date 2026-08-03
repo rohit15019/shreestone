@@ -10,9 +10,9 @@ export const tilesData = [
     pricePerSqFt: 185,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Inspired by the rarest Italian Carrara Statuario marble, featuring subtle gold and gray veining across a luminous high-gloss porcelain body. Perfect for luxury living rooms and grand entryways.",
     thickness: "12 mm",
@@ -32,8 +32,8 @@ export const tilesData = [
     pricePerSqFt: 165,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Deep charcoal and warm gray tones with a buttery satin-matte touch that eliminates glare while providing slip-resistant luxury for contemporary spaces.",
     thickness: "12 mm",
@@ -53,8 +53,8 @@ export const tilesData = [
     pricePerSqFt: 195,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Artisanal carving glaze technique where every golden vein has a physical 3D micro-relief texture. Catches ambient light beautifully on feature walls.",
     thickness: "9 mm",
@@ -74,8 +74,8 @@ export const tilesData = [
     pricePerSqFt: 210,
     availability: "Limited Stock",
     images: [
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Dramatic jet-black marble aesthetic adorned with striking golden fissures. A bold, architectural statement tile for master en-suite bathrooms.",
     thickness: "9 mm",
@@ -95,8 +95,8 @@ export const tilesData = [
     pricePerSqFt: 135,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Authentic Roman travertine texture with organic linear pores and soft cream-beige tones, imparting a timeless warmth to interior walls.",
     thickness: "9 mm",
@@ -116,8 +116,8 @@ export const tilesData = [
     pricePerSqFt: 145,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Hand-crafted look with undulating high-gloss surface and jewel-toned sapphire blue glaze. The ultimate designer backsplash for gourmet kitchens.",
     thickness: "9 mm",
@@ -137,8 +137,8 @@ export const tilesData = [
     pricePerSqFt: 130,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Soft gray feather veining on a pristine white background with an R10 anti-skid matte finish engineered specifically for wet bathroom floors.",
     thickness: "10 mm",
@@ -158,7 +158,7 @@ export const tilesData = [
     pricePerSqFt: 155,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Heavy-duty 15 mm full-body vitrified paver with natural cleft quartzite texture. Unmatched load-bearing capacity and weather resistance for outdoor areas.",
@@ -179,8 +179,8 @@ export const tilesData = [
     pricePerSqFt: 225,
     availability: "Limited Stock",
     images: [
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Exotic jade and emerald green onyx crystallization with luminous golden amber striations. A show-stopping luxury slab for private residences.",
     thickness: "12 mm",
@@ -200,7 +200,7 @@ export const tilesData = [
     pricePerSqFt: 150,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Subtle tactile grooves inspired by desert wind-carved dunes. Excellent slip resistance with a refined architectural aesthetic for terraces.",
     thickness: "12 mm",
@@ -220,7 +220,7 @@ export const tilesData = [
     pricePerSqFt: 175,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Ultra-pure alpine white with mirror-like polish and stain-resistant nano-seal protection. Designed specifically for kitchen countertops and walls.",
     thickness: "9 mm",
@@ -240,7 +240,7 @@ export const tilesData = [
     pricePerSqFt: 170,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Rich Italian Breccia marble pattern mingling creamy cappuccino undertones with gleaming gold mineral veins.",
     thickness: "9 mm",
@@ -260,7 +260,7 @@ export const tilesData = [
     pricePerSqFt: 140,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Classical Venetian terrazzo texture embedded with fine white marble chips in a smooth matte porcelain base. Ideal for artisan architectural interiors.",
     thickness: "10 mm",
@@ -300,7 +300,7 @@ export const tilesData = [
     pricePerSqFt: 205,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Specialized 3D carving texture over Italian Calacatta gold veins that creates an authentic sculpted stone tactile feel.",
     thickness: "12 mm",
@@ -320,7 +320,7 @@ export const tilesData = [
     pricePerSqFt: 160,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Inspired by Norwegian glacial slate stones. R11 slip rating for maximum grip around swimming pools, gardens, and outdoor terraces.",
     thickness: "15 mm",
@@ -340,7 +340,7 @@ export const tilesData = [
     pricePerSqFt: 155,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Soft silky beige travertine with subtle directional pores. Transforms wet bathrooms into serene, spa-like Mediterranean sanctuaries.",
     thickness: "9 mm",
@@ -360,7 +360,7 @@ export const tilesData = [
     pricePerSqFt: 165,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Classic Italian Carrara marble cut into a seamless herringbone mosaic sheet. Heat-resistant and effortless to clean for kitchen backsplashes.",
     thickness: "8 mm",
@@ -380,7 +380,7 @@ export const tilesData = [
     pricePerSqFt: 240,
     availability: "Limited Stock",
     images: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Exotic botanical green and teal quartzite crystal slab with golden streaks. An architectural masterpiece for statement walls.",
     thickness: "12 mm",
@@ -400,7 +400,7 @@ export const tilesData = [
     pricePerSqFt: 165,
     availability: "In Stock",
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
+      "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?auto=format&fit=crop&w=1200&q=85"
     ],
     description: "Deep charcoal Belgian limestone finish with weathered edges and high load resistance for outdoor courtyards and villa driveways.",
     thickness: "15 mm",
