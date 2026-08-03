@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-marble-light dark:bg-charcoal-900 text-charcoal-900 dark:text-gray-100 font-sans antialiased selection:bg-gold/30 selection:text-gold-dark transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .glass-nav {
+    @apply bg-white/80 dark:bg-charcoal-900/80 backdrop-blur-md border-b border-gray-200/80 dark:border-charcoal-800/80;
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-gold-amber via-gold to-gold-light;
+  }
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C59B27;
+}
