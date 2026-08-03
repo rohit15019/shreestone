@@ -271,15 +271,77 @@ const LuxuryRoomScene = () => {
   );
 };
 
+// Camera Angle Preset Controller (Top-down, Eye Level, Bottom-to-Top)
+const CameraPresetController = ({ preset }) => {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    if (!preset) return;
+    if (preset === 'top') {
+      // Look from ceiling down at floor
+      camera.position.set(0, 18, 1);
+      camera.lookAt(0, 0, 0);
+    } else if (preset === 'eye') {
+      // Standard eye level
+      camera.position.set(0, 4.5, 12);
+      camera.lookAt(0, 3, 0);
+    } else if (preset === 'bottom') {
+      // Bottom-to-Top view: Low floor position looking UP towards ceiling/walls
+      camera.position.set(0, 1.2, 10);
+      camera.lookAt(0, 10, -2);
+    }
+  }, [preset, camera]);
+
+  return null;
+};
+
 // Main 360° Room Viewer Component
 const RoomViewer = ({ canvasContainerRef }) => {
   const { isAutoRotate, cameraResetTrigger } = useRoom360();
+  const [cameraPreset, setCameraPreset] = useState('eye');
 
   return (
     <div
       ref={canvasContainerRef}
       className="relative w-full h-full min-h-[460px] lg:min-h-[680px] bg-charcoal-950 rounded-3xl overflow-hidden shadow-2xl border border-gray-200/40 dark:border-charcoal-700 select-none"
     >
+      {/* Quick Camera View Presets (Top / Eye-Level / Bottom-to-Top) */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 p-1.5 bg-charcoal-900/85 backdrop-blur-md rounded-2xl border border-white/15 shadow-xl">
+        <button
+          onClick={() => setCameraPreset('top')}
+          className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 ${
+            cameraPreset === 'top'
+              ? 'bg-gold text-charcoal-950 font-bold shadow-sm'
+              : 'bg-white/10 hover:bg-white/20 text-white'
+          }`}
+          title="Top-Down Floor View"
+        >
+          Top View
+        </button>
+        <button
+          onClick={() => setCameraPreset('eye')}
+          className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 ${
+            cameraPreset === 'eye'
+              ? 'bg-gold text-charcoal-950 font-bold shadow-sm'
+              : 'bg-white/10 hover:bg-white/20 text-white'
+          }`}
+          title="Standard Eye Level View"
+        >
+          Eye Level
+        </button>
+        <button
+          onClick={() => setCameraPreset('bottom')}
+          className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 ${
+            cameraPreset === 'bottom'
+              ? 'bg-gold text-charcoal-950 font-bold shadow-sm'
+              : 'bg-white/10 hover:bg-white/20 text-white'
+          }`}
+          title="Bottom-to-Top Upward View"
+        >
+          Bottom-Up View
+        </button>
+      </div>
+
       <Canvas
         shadows
         camera={{ position: [0, 4.5, 12], fov: 60 }}
@@ -290,16 +352,18 @@ const RoomViewer = ({ canvasContainerRef }) => {
         </Suspense>
 
         <CameraResetter trigger={cameraResetTrigger} />
+        <CameraPresetController preset={cameraPreset} />
 
         <OrbitControls
           enableZoom={true}
-          enablePan={false}
-          minDistance={3}
-          maxDistance={28}
-          maxPolarAngle={Math.PI / 2 - 0.05}
+          enablePan={true}
+          minDistance={2}
+          maxDistance={32}
+          minPolarAngle={0.05}
+          maxPolarAngle={Math.PI - 0.05}
           autoRotate={isAutoRotate}
           autoRotateSpeed={1.0}
-          rotateSpeed={0.7}
+          rotateSpeed={0.8}
           dampingFactor={0.05}
         />
       </Canvas>
@@ -307,7 +371,7 @@ const RoomViewer = ({ canvasContainerRef }) => {
       {/* 360° Drag Instruction Badge */}
       <div className="absolute bottom-4 left-4 pointer-events-none z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold border border-white/15">
         <Compass className="w-3.5 h-3.5 text-gold animate-spin-slow" />
-        <span>Drag to rotate 360° • Scroll to Zoom</span>
+        <span>Drag anywhere to look Top to Bottom & 360° • Scroll to Zoom</span>
       </div>
     </div>
   );
