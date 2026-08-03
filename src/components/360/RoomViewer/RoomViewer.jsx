@@ -5,8 +5,19 @@ import * as THREE from 'three';
 import { useRoom360 } from '../../../context/Room360Context';
 import { Sparkles, Loader2, Compass } from 'lucide-react';
 import { motion } from 'framer-motion';
+import {
+  LivingRoomFurniture,
+  BathroomFurniture,
+  KitchenFurniture,
+  BedroomFurniture,
+  BalconyFurniture,
+  OfficeFurniture,
+  HotelLobbyFurniture,
+  RestaurantFurniture,
+  OutdoorFurniture
+} from './RoomFurniture';
 
-// Safe Texture Generator for Floor & Wall Slabs
+// Safe Texture Generator for Floor & Wall Slabs with Architectural Grout Joints & Bevel
 const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
   const [texture, setTexture] = useState(null);
 
@@ -14,17 +25,33 @@ const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
     let isMounted = true;
     const imgUrl = tile?.images?.[0] || '';
 
+    // Helper to draw realistic grout joint & bevel around every tile slab (as tiles are laid in a house)
+    const drawGroutJointsAndBevel = (ctx) => {
+      // 1. Realistic outer grout spacer joint between house tiles
+      ctx.strokeStyle = 'rgba(150, 150, 150, 0.85)';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(0, 0, 512, 512);
+
+      // 2. Inner bevel highlight for 3D slab depth
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(6, 6, 500, 500);
+
+      // 3. Inner edge shadow
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(9, 9, 494, 494);
+    };
+
     const createDefaultTexture = () => {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 512;
       const ctx = canvas.getContext('2d');
 
-      // Draw luxury procedural marble grid
       ctx.fillStyle = tile?.color === 'Black' ? '#1E1E1E' : '#F4F4F4';
       ctx.fillRect(0, 0, 512, 512);
 
-      // Subtle veining
       ctx.strokeStyle = tile?.color === 'Black' ? 'rgba(212,175,55,0.35)' : 'rgba(0,0,0,0.12)';
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -32,10 +59,7 @@ const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
       ctx.bezierCurveTo(200, 150, 100, 350, 450, 512);
       ctx.stroke();
 
-      // Grout frame
-      ctx.strokeStyle = 'rgba(212,175,55,0.5)';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(0, 0, 512, 512);
+      drawGroutJointsAndBevel(ctx);
 
       const tex = new THREE.CanvasTexture(canvas);
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
@@ -50,23 +74,29 @@ const useSafeTileTexture = (tile, repeatX = 4, repeatY = 4) => {
       return;
     }
 
-    const loader = new THREE.TextureLoader();
-    loader.crossOrigin = 'anonymous';
-    loader.load(
-      imgUrl,
-      (tex) => {
-        if (!isMounted) return;
-        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-        tex.repeat.set(repeatX, repeatY);
-        tex.colorSpace = THREE.SRGBColorSpace;
-        tex.needsUpdate = true;
-        setTexture(tex);
-      },
-      undefined,
-      () => {
-        if (isMounted) createDefaultTexture();
-      }
-    );
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = imgUrl;
+    img.onload = () => {
+      if (!isMounted) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      ctx.drawImage(img, 0, 0, 512, 512);
+      drawGroutJointsAndBevel(ctx);
+
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(repeatX, repeatY);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.needsUpdate = true;
+      setTexture(tex);
+    };
+    img.onerror = () => {
+      if (isMounted) createDefaultTexture();
+    };
 
     return () => {
       isMounted = false;
@@ -227,130 +257,16 @@ const LuxuryRoomScene = () => {
         <meshStandardMaterial color="#111317" roughness={0.9} />
       </mesh>
 
-      {/* 4. ROOM-SPECIFIC ARCHITECTURAL FEATURES & FURNITURE SILHOUETTES */}
-      {activeRoom.id === 'living_room' && (
-        <group position={[0, 0, -2]}>
-          {/* Luxury Sofa silhouette */}
-          <mesh position={[0, 1.2, 0]} castShadow receiveShadow>
-            <boxGeometry args={[8, 2.4, 3.2]} />
-            <meshStandardMaterial color="#1E2229" roughness={0.8} />
-          </mesh>
-          {/* Gold Coffee Table */}
-          <mesh position={[0, 0.9, 3.5]} castShadow receiveShadow>
-            <boxGeometry args={[4, 0.4, 2.2]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.8} roughness={0.2} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'bathroom' && (
-        <group position={[0, 0, -2]}>
-          {/* Soaking Bathtub */}
-          <mesh position={[0, 1.4, 0]} castShadow receiveShadow>
-            <cylinderGeometry args={[2.5, 2.2, 2.6, 32]} />
-            <meshStandardMaterial color="#FFFFFF" roughness={0.1} />
-          </mesh>
-          {/* Golden Faucet Stand */}
-          <mesh position={[2.8, 2.2, 0]}>
-            <cylinderGeometry args={[0.1, 0.15, 4.4, 16]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.9} roughness={0.15} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'kitchen' && (
-        <group position={[0, 0, -1]}>
-          {/* Gourmet Marble Kitchen Island */}
-          <mesh position={[0, 1.8, 0]} castShadow receiveShadow>
-            <boxGeometry args={[10, 3.6, 3.8]} />
-            <meshStandardMaterial color="#1A1C20" roughness={0.4} />
-          </mesh>
-          {/* Gold Pendant Light Bar above island */}
-          <mesh position={[0, h - 2, 0]}>
-            <boxGeometry args={[8, 0.2, 0.4]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.8} roughness={0.2} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'bedroom' && (
-        <group position={[0, 0, -3]}>
-          {/* King Platform Bed */}
-          <mesh position={[0, 1.2, 0]} castShadow receiveShadow>
-            <boxGeometry args={[7, 2.0, 7.5]} />
-            <meshStandardMaterial color="#2B2D33" roughness={0.7} />
-          </mesh>
-          {/* Upholstered Headboard */}
-          <mesh position={[0, 3.2, -3.5]}>
-            <boxGeometry args={[8, 4, 0.5]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.5} roughness={0.4} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'balcony' && (
-        <group position={[0, 0, l / 2 - 1]}>
-          {/* Glass Balustrade Balcony Railing */}
-          <mesh position={[0, 2.2, 0]}>
-            <boxGeometry args={[w - 1, 4.4, 0.2]} />
-            <meshStandardMaterial color="#A3E635" transparent opacity={0.3} roughness={0.1} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'office' && (
-        <group position={[0, 0, -2]}>
-          {/* Executive Conference Desk */}
-          <mesh position={[0, 1.6, 0]} castShadow receiveShadow>
-            <boxGeometry args={[9, 0.5, 4.5]} />
-            <meshStandardMaterial color="#22252A" roughness={0.3} />
-          </mesh>
-          {/* Gold Structural Base */}
-          <mesh position={[0, 0.8, 0]}>
-            <boxGeometry args={[6, 1.6, 2.5]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.8} roughness={0.3} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'hotel_lobby' && (
-        <group position={[0, 0, -5]}>
-          {/* 5-Star Central Architectural Chandelier & Pillar */}
-          <mesh position={[0, h / 2, 0]}>
-            <cylinderGeometry args={[1.5, 1.8, h, 32]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.7} roughness={0.2} />
-          </mesh>
-          {/* Reception Podium */}
-          <mesh position={[0, 2.0, 4]}>
-            <boxGeometry args={[12, 4.0, 3.0]} />
-            <meshStandardMaterial color="#16181D" roughness={0.4} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'restaurant' && (
-        <group position={[0, 0, -1]}>
-          {/* Dining Table Centerpiece */}
-          <mesh position={[0, 1.5, 0]} castShadow receiveShadow>
-            <cylinderGeometry args={[3.2, 3.2, 0.4, 32]} />
-            <meshStandardMaterial color="#2D2A26" roughness={0.5} />
-          </mesh>
-          <mesh position={[0, 0.7, 0]}>
-            <cylinderGeometry args={[0.5, 1.0, 1.4, 16]} />
-            <meshStandardMaterial color="#D4AF37" metalness={0.9} roughness={0.2} />
-          </mesh>
-        </group>
-      )}
-
-      {activeRoom.id === 'outdoor' && (
-        <group position={[0, 0.1, -3]}>
-          {/* Luxury Travertine Infinity Pool Basin */}
-          <mesh position={[0, -0.2, 0]}>
-            <boxGeometry args={[12, 0.6, 8]} />
-            <meshStandardMaterial color="#0284C7" roughness={0.1} metalness={0.2} />
-          </mesh>
-        </group>
-      )}
+      {/* 4. ROOM-SPECIFIC ARCHITECTURAL FEATURES & FURNITURE ASSEMBLIES */}
+      {activeRoom.id === 'living_room' && <LivingRoomFurniture />}
+      {activeRoom.id === 'bathroom' && <BathroomFurniture />}
+      {activeRoom.id === 'kitchen' && <KitchenFurniture />}
+      {activeRoom.id === 'bedroom' && <BedroomFurniture />}
+      {activeRoom.id === 'balcony' && <BalconyFurniture />}
+      {activeRoom.id === 'office' && <OfficeFurniture />}
+      {activeRoom.id === 'hotel_lobby' && <HotelLobbyFurniture />}
+      {activeRoom.id === 'restaurant' && <RestaurantFurniture />}
+      {activeRoom.id === 'outdoor' && <OutdoorFurniture />}
     </>
   );
 };
